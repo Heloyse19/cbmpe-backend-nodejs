@@ -49,3 +49,9 @@ coverage/
 # --- Arquivos Temporários ---
 *.tmp
 *.temp
+
+# Ignora tudo na pasta uploads
+uploads/*
+
+# Abre exceção para o arquivo .gitkeep (para a pasta subir vazia)
+!uploads/.gitkeep
