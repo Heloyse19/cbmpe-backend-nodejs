@@ -27,10 +27,52 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Rotas para ocorrências
+
 app.get('/occurrences', async (req, res) => {
-  const occurrences = await Occurrence.find().sort({ dataOcorrencia: -1 });
-  res.json(occurrences);
+  try {
+    const { search } = req.query;
+    let query = {};
+
+    if (search) {
+      query = { codigoOcorrencia: { $regex: search, $options: 'i' } };
+    }
+
+    const occurrences = await Occurrence.find(query).sort({ dataOcorrencia: -1 });
+    res.json(occurrences);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao buscar ocorrências' });
+  }
+});
+
+app.delete('/occurrences/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Occurrence.findByIdAndDelete(id);
+    res.json({ message: 'Ocorrência deletada com sucesso' });
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao deletar ocorrência' });
+  }
+});
+
+app.put('/occurrences/:id', upload.single('photo'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const occurrenceData = JSON.parse(req.body.data);
+    
+    let updateData = {
+      ...occurrenceData
+    };
+
+    if (req.file) {
+      updateData.photo = req.file.path;
+    }
+
+    const updatedOccurrence = await Occurrence.findByIdAndUpdate(id, updateData, { new: true });
+    res.json(updatedOccurrence);
+  } catch (error) {
+    console.error("Erro PUT:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.post('/occurrences', upload.single('photo'), async (req, res) => {
@@ -40,14 +82,13 @@ app.post('/occurrences', upload.single('photo'), async (req, res) => {
     
     const occurrence = new Occurrence({
       ...occurrenceData,
-      photo,
-      latitude: req.body.latitude,
-      longitude: req.body.longitude
+      photo
     });
     
     await occurrence.save();
     res.json(occurrence);
   } catch (error) {
+    console.error("Erro POST:", error);
     res.status(500).json({ error: error.message });
   }
 });

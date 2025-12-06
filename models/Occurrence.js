@@ -1,29 +1,48 @@
 const mongoose = require('mongoose');
 
 const OccurrenceSchema = new mongoose.Schema({
-  // Dados do Formulário 1
+
   grupo: String,
   codigoOcorrencia: String,
+
+  tipoSalvamento: String, 
+  localOcorrencia: String, 
+  grauAfogamento: String, 
+  cadaverLocalizado: Boolean, 
+  
+ 
+  resgateAnimal: Boolean,
+  tipoAnimal: String,
+  estadoAnimal: String,
+  
+ 
+  postoComandante: String,
+  nomeGuerra: String,
+
+
   associadoDesastre: Boolean,
   codigoDesastre: String,
   eventos: [String],
   outrosDesastres: String,
   numeroVitimas: Number,
   
-  // Dados do Formulário 2
+ 
+  houveMergulho: Boolean, 
+  
   localMergulho: String,
-  visibilidadeAgua: String,
+  profundidade: Number, 
+  visibilidadeAgua: String, 
   ambiente: String,
-  tipoFundo: String,
+  tipoFundo: String, 
   correnteza: Boolean,
-  coordenadasLat: Number,
-  coordenadasLong: Number,
   numeroMergulhadores: Number,
   
-  // Dados gerais
+  coordenadasLat: Number, 
+  coordenadasLong: Number,
+
   photo: String,
-  latitude: Number,
-  longitude: Number,
+  latitude: Number, 
+  longitude: Number, 
   dataOcorrencia: { type: Date, default: Date.now }
 });
 
